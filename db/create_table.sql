@@ -29,10 +29,25 @@ CREATE TABLE Class(
         REFERENCES Teacher (teacher_ID)
 );
 
-CREATE TABLE Student(
-    
-
+CREATE TABLE Teacher(
+    student_ID INTEGER NOT NULL PRIMARY KEY,
+    first_name VARCHAR(50) NOT NULL,
+    last_name VARCHAR(50) NOT NULL,
+    date_of_birth VARCHAR(50) NOT NULL,
+    email VARCHAR(50) NOT NULL,
+    subject VARCHAR(50) NOT NULL
 );
+
+-- Student data 
+INSERT INTO Student VALUES
+    (9321, "Jofa", "Kaiffari", "01.01.1999", "jofa.kaiffari@jeerock.com", "Software Engineering"),
+    (9829, "Iskender", "Kebab", "04.03.2001", "iskender.kebab@jeerock.com", "Software Engineering"),
+    (3376, "Big", "Mac", "19.11.2000", "big.mac@jeerock.com", "Industrial Engineering and Management"),
+    (1659, "Pepsi", "Man", "30.01.2000", "pepsi.man@jeerock.com", "Industrial Engineering and Management"),
+    (5548, "Albert", "Einstein", "12.08.1999", "albert.einstein@jeerock.com", "Computational Engineering"),
+    (9863, "Helsinki", "City", "02.02.2002", "helsinki.city@jeerock.com", "Environmental Engineering"),
+    (7593, "Schrödingering", "Kissa", "01.01.1999", "jofa.kaiffari@jeerock.com", "Computational Engineering");
+
 
 --Insering text to the table
 INSERT INTO University (name) VALUES

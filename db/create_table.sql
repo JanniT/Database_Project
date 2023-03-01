@@ -1,5 +1,9 @@
 CREATE TABLE University(
-    name VARCHAR(50)
+    name VARCHAR(50) NOT NULL, 
+    FOREIGN KEY (student_id)
+        REFERENCES Student (student_id),
+    FOREIGN KEY(teacher_id)
+        REFERENCES Teacher (teacher_id)
 );
 
 CREATE TABLE Teacher(
@@ -8,6 +12,11 @@ CREATE TABLE Teacher(
     last_name VARCHAR(50) NOT NULL,
     date_of_birth VARCHAR(50) NOT NULL,
     email VARCHAR(50) NOT NULL
+);
+
+CREATE TABLE Student(
+    
+
 );
 
 --Insering text to the table

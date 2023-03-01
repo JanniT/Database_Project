@@ -1,5 +1,9 @@
 CREATE TABLE University(
-    name VARCHAR(50)
+    name VARCHAR(50) NOT NULL, 
+    FOREIGN KEY (student_id)
+        REFERENCES Student (student_id),
+    FOREIGN KEY(teacher_id)
+        REFERENCES Teacher (teacher_id)
 );
 
 CREATE TABLE Student(

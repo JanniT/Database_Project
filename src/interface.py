@@ -1,7 +1,10 @@
 import sqlite3
 import subprocess
+import sys
 
-def menu(items: list) -> int:
+def menu(allItems: dict) -> str:
+    items = list(allItems.keys())
+
     print("\nSelect one:\n")
     for i, item in enumerate(items):
         print(f"\t{i + 1}. {item}")
@@ -15,13 +18,26 @@ def menu(items: list) -> int:
         if char in ("0123456789"):
             valid += char
     
-    ret = int(valid) - 1
-    return -1 if ret < 0 or ret > len(items) - 1 else ret
+    try:
+        ret = int(valid) - 1
+    except ValueError:
+        return ""
+
+    if ret < 0 or ret > len(items) - 1:
+        return ""
+
+    if ret == -1:
+        sys.exit()
+
+    return allItems[items[ret]] if items[ret] in list(allItems.keys()) else ""
 
 if __name__ == "__main__":
     running = True
     while running:
-        s = menu(["Query 1", "Query 2", "Query 3", "Query 4", "Query 5"])
-        running = (s != -1)
-        print(s)
+        queries = {"Select all from uni": "SELECT * FROM University;",
+                   "Select all from jee": "SELECT * FROM Jee;",
+                   "Prööt": "Jeejee jee rock rock :DDDDD"
+                   }
+
+        print(menu(queries))
 

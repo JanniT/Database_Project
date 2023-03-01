@@ -5,7 +5,8 @@ CREATE TABLE University(
     FOREIGN KEY (student_ID)
         REFERENCES Student (student_ID),
     FOREIGN KEY(teacher_ID)
-        REFERENCES Teacher (teacher_ID)
+        REFERENCES Teacher (teacher_ID),
+    UNIQUE (student_ID, teacher_ID)
 );
 
 CREATE TABLE Teacher(

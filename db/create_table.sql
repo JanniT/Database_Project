@@ -16,6 +16,17 @@ CREATE TABLE Teacher(
     email VARCHAR(50) NOT NULL
 );
 
+CREATE TABLE Class(
+    room_ID INTEGER PRIMARY KEY,
+    name VARCHAR(50) NOT NULL,
+    student_ID INTEGER NOT NULL,
+    teacher_ID INTEGER NOT NULL,
+    FOREIGN KEY (student_ID)
+        REFERENCES Student (student_ID),
+    FOREIGN KEY (teacher_ID)
+        REFERENCES Teacher (teacher_ID)
+);
+
 CREATE TABLE Student(
     
 
@@ -39,3 +50,12 @@ INSERT INTO Teacher VALUES
     (1006, "Jennifer", "Frawley", "16.08.1981", "jennifer.frawley@jeejee.fi"),
     (1007, "Monica", "Kaldor", "30.01.1989", "monica.kaldor@jeejee.fi");
     
+--Inserting stuff to Class table
+INSERT INTO Class (room_ID, name) VALUES
+    (1, "Data Structures and Algorithms"),
+    (2, "Basics of Database Systems"),
+    (3, "Svenska i Arbetslivet"),
+    (4, "Introduction to DevOps"),
+    (5, "Discrete Models and Methods"),
+    (6, "Basics of Linux"),
+    (7, "Foundations of Computer Science");

@@ -11,7 +11,9 @@ CREATE TABLE Teacher(
     first_name VARCHAR(50) NOT NULL,
     last_name VARCHAR(50) NOT NULL,
     date_of_birth VARCHAR(50) NOT NULL,
-    email VARCHAR(50) NOT NULL
+    email VARCHAR(50) NOT NULL,
+    CHECK (teacher_ID > 0),
+    UNIQUE (teacher_ID, email)
 );
 
 CREATE TABLE Student(

@@ -1,7 +1,7 @@
 CREATE TABLE University(
     name VARCHAR(50) NOT NULL,
-    student_ID INTEGER NOT NULL,
-    teacher_ID INTEGER NOT NULL,
+    student_ID INTEGER,
+    teacher_ID INTEGER,
     FOREIGN KEY (student_ID)
         REFERENCES Student (student_ID),
     FOREIGN KEY(teacher_ID)
@@ -22,8 +22,8 @@ CREATE TABLE Teacher(
 CREATE TABLE Class(
     room_ID INTEGER PRIMARY KEY,
     name VARCHAR(50) NOT NULL,
-    student_ID INTEGER NOT NULL,
-    teacher_ID INTEGER NOT NULL,
+    student_ID INTEGER,
+    teacher_ID INTEGER,
     FOREIGN KEY (student_ID)
         REFERENCES Student (student_ID),
     FOREIGN KEY (teacher_ID)

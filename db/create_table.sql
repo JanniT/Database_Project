@@ -72,11 +72,11 @@ INSERT INTO Teacher VALUES
     (1007, "Monica", "Kaldor", "30.01.1989", "monica.kaldor@jeejee.fi");
     
 --Inserting stuff to Class table
-INSERT INTO Class (room_ID, name) VALUES
-    (1, "Data Structures and Algorithms"),
-    (2, "Basics of Database Systems"),
-    (3, "Svenska i Arbetslivet"),
-    (4, "Introduction to DevOps"),
-    (5, "Discrete Models and Methods"),
-    (6, "Basics of Linux"),
-    (7, "Foundations of Computer Science");
+INSERT INTO Class (room_ID, name, student_ID, teacher_ID) VALUES
+    (1, "Data Structures and Algorithms", 9321, 1001),
+    (2, "Basics of Database Systems", 9829, 1002),
+    (3, "Svenska i Arbetslivet", 3376, 1003),
+    (4, "Introduction to DevOps", 1659, 1004),
+    (5, "Discrete Models and Methods", 5548, 1005),
+    (6, "Basics of Linux", 9863, 1006),
+    (7, "Foundations of Computer Science", 7593, 1007);

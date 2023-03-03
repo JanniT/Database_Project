@@ -15,7 +15,12 @@ CREATE TABLE Teacher(
     last_name VARCHAR(50) NOT NULL,
     date_of_birth VARCHAR(50) NOT NULL,
     email VARCHAR(50) NOT NULL,
+    class_name VARCHAR(50),
     CHECK (teacher_ID > 0),
+    FOREIGN KEY (class_name)
+        REFERENCES Class (name)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE,
     UNIQUE (teacher_ID, email)
 );
 

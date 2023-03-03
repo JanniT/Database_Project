@@ -112,12 +112,19 @@ INSERT INTO Student VALUES
 
 
 --Insering text to the table
-INSERT INTO University (name) VALUES
-    ("LUT University"),
-    ("Aalto University"),
-    ("University of Oulu"),
-    ("University of Vaasa"),
-    ("University of Eastern Finland");
+INSERT INTO University (name, student_ID, teacher_ID, class_name) VALUES
+    ("LUT University", 9321, 1001, "Data Structures and Algorithms"),
+    ("LUT University", 9829, 1002, "Basics of Database Systems"),
+    ("LUT University", 3376, 1003, "Svenska i Arbetslivet"),
+    ("LUT University", 1659, 1004, "Introduction to DevOps"),
+    ("LUT University", 5548, 1005, "Discrete Models and Methods"),
+    ("LUT University", 9863, 1006, "Basics of Linux"),
+    ("LUT University", 7593, 1007, "Foundations of Computer Science");
+    
+    -- ("Aalto University"),
+    -- ("University of Oulu"),
+    -- ("University of Vaasa"),
+    -- ("University of Eastern Finland");
 
 --Inserting stuff to the Teacher table
 INSERT INTO Teacher VALUES

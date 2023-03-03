@@ -2,10 +2,19 @@ CREATE TABLE University(
     name VARCHAR(50) NOT NULL,
     student_ID INTEGER,
     teacher_ID INTEGER,
+    class_name varchar(50),
     FOREIGN KEY (student_ID)
-        REFERENCES Student (student_ID),
+        REFERENCES Student (student_ID)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE,
     FOREIGN KEY(teacher_ID)
-        REFERENCES Teacher (teacher_ID),
+        REFERENCES Teacher (teacher_ID)
+        ON UPDATE CASCADE 
+        ON DELETE CASCADE,
+    FOREIGN KEY(class_name)
+        REFERENCES Class (name)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE,
     UNIQUE (student_ID, teacher_ID)
 );
 

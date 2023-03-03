@@ -34,8 +34,8 @@ CREATE TABLE Teacher(
 );
 
 CREATE TABLE Class(
-    room_ID INTEGER DEFAULT 0000 PRIMARY KEY,
-    name VARCHAR(50) NOT NULL,
+    name VARCHAR(50) NOT NULL PRIMARY KEY,
+    room_ID INTEGER DEFAULT 0000,
     student_ID INTEGER,
     teacher_ID INTEGER,
     FOREIGN KEY (student_ID)
@@ -130,11 +130,11 @@ INSERT INTO Teacher VALUES
     (1007, "Monica", "Kaldor", "30.01.1989", "monica.kaldor@jeejee.fi");
     
 --Inserting stuff to Class table
-INSERT INTO Class (room_ID, name, student_ID, teacher_ID) VALUES
-    (1, "Data Structures and Algorithms", 9321, 1001),
-    (2, "Basics of Database Systems", 9829, 1002),
-    (3, "Svenska i Arbetslivet", 3376, 1003),
-    (4, "Introduction to DevOps", 1659, 1004),
-    (5, "Discrete Models and Methods", 5548, 1005),
-    (6, "Basics of Linux", 9863, 1006),
-    (7, "Foundations of Computer Science", 7593, 1007);
+INSERT INTO Class (name, room_ID, student_ID, teacher_ID) VALUES
+    ("Data Structures and Algorithms", 1, 9321, 1001),
+    ("Basics of Database Systems", 2, 9829, 1002),
+    ("Svenska i Arbetslivet", 3, 3376, 1003),
+    ("Introduction to DevOps", 4, 1659, 1004),
+    ("Discrete Models and Methods", 5, 5548, 1005),
+    ("Basics of Linux", 6, 9863, 1006),
+    ("Foundations of Computer Science", 7, 7593, 1007);

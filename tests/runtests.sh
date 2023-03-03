@@ -82,7 +82,7 @@ runtest() {
     
     # Check if python or bash file, and execute accordingly
     if [ "$2" = "python" ]; then
-        python "tests/test/$1"
+        python3 "tests/test/$1"
     elif [ "$2" = "bash" ]; then
         bash "tests/test/$1"
     fi

@@ -86,7 +86,7 @@ def funcQueries():
     print("")
 
 def funcRunTests():
-    subprocess.run("tests/runtests.sh")
+    subprocess.run(["tests/runtests.sh", "--exit-on-failure"])
 
 def funcDummy():
     print("Jeerock")

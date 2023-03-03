@@ -1,5 +1,8 @@
 #!/bin/bash
 
+DIR=$(pwd | sed 's/Database_Project\/.*/Database_Project/')
+cd $DIR
+
 # Keep track of tests status'
 FAILED=0
 PASSED=0
@@ -28,7 +31,7 @@ usage() {
 
 # Source TESTTAGS env variable if declared in tests.sh file
 # shellcheck disable=SC1091
-[ -e "tags.sh" ] && source ./tags.sh
+[ -e "tests/tags.sh" ] && source ./tests/tags.sh
 
 [ -z "$TESTTAGS" ] && error "TESTTAGS env variable is empty"
 
@@ -79,9 +82,9 @@ runtest() {
     
     # Check if python or bash file, and execute accordingly
     if [ "$2" = "python" ]; then
-        python "test/$1"
+        python "tests/test/$1"
     elif [ "$2" = "bash" ]; then
-        bash "test/$1"
+        bash "tests/test/$1"
     fi
 
     # Save exit code
@@ -108,7 +111,7 @@ runtest() {
 for i in "${TESTS[@]}"
 do
     # First check if the file even exists
-    [ ! -e "test/$i" ] && \
+    [ ! -e "tests/test/$i" ] && \
         tput setaf 1 && echo "ERROR: Could not find test file $i" && \
         tput setaf 7 && continue
 
@@ -130,7 +133,7 @@ COLOR=2 # Green if no fails, otherwise red
 RESULT="Test results, in total $(( FAILED + SKIPPED + PASSED )) tests were ran:\n"
 RESULT+="\t$FAILED FAILED | $SKIPPED SKIPPED | $PASSED PASSED"
 
-tput setaf $COLOR; echo -e "$RESULT"
+tput setaf $COLOR; echo -e "$RESULT"; tput setaf 7
 
 # Exit with the amount of failed tests as a exit code
 exit $FAILED

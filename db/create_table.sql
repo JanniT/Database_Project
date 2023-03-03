@@ -20,14 +20,18 @@ CREATE TABLE Teacher(
 );
 
 CREATE TABLE Class(
-    room_ID INTEGER PRIMARY KEY,
+    room_ID INTEGER DEFAULT 0000 PRIMARY KEY,
     name VARCHAR(50) NOT NULL,
     student_ID INTEGER,
     teacher_ID INTEGER,
     FOREIGN KEY (student_ID)
-        REFERENCES Student (student_ID),
+        REFERENCES Student (student_ID)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE,
     FOREIGN KEY (teacher_ID)
-        REFERENCES Teacher (teacher_ID),
+        REFERENCES Teacher (teacher_ID)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE,
     UNIQUE (student_ID, teacher_ID)
 );
 

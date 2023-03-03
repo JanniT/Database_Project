@@ -60,6 +60,46 @@ CREATE TABLE Student(
     UNIQUE (student_ID, email)
 );
 
+CREATE TABLE Company(
+    company_name VARCHAR(50) NOT NULL,
+    student_ID INTEGER NOT NULL,
+    project_ID INTEGER NOT NULL,
+    FOREIGN KEY (student_ID)
+        REFERENCES Student (student_ID)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE,
+    FOREIGN KEY (project_ID)
+        REFERENCES Project (project_ID)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE
+);
+
+CREATE TABLE Project(
+    project_ID INTEGER NOT NULL PRIMARY KEY,
+    project_name VARCHAR(50) NOT NULL,
+    student_ID INTEGER NOT NULL,
+    FOREIGN KEY (student_ID)
+        REFERENCES Student (student_ID)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE
+);
+
+-- Dummy data for Project table
+INSERT INTO Project VALUES
+    (1234, "Backlog grooming", 9321),
+    (1235, "Script improvements", 9829),
+    (1236, "Solve DaVinci Code", 7593),
+    (1237, "Wabble hands", 1659),
+    (1238, "Complete time dialation formulas", 5548);
+
+-- Dummy data for Company table
+INSERT INTO Company VALUES
+    ("Ballpit startup", 9321, 1234),
+    ("International Multibillion Megacorporation", 9829, 1235),
+    ("Illuminati", 7593, 1236),
+    ("Chocolate Factory", 1659, 1237),
+    ("Physics Institute", 5548, 1238);
+
 -- Student data 
 INSERT INTO Student VALUES
     (9321, "Jofa", "Kaiffari", "01.01.1999", "jofa.kaiffari@jeerock.com", "Software Engineering"),

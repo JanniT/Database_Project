@@ -10,15 +10,14 @@ def interactiveMenu(menuitems: dict, prompt: str = "Select",
         exclude: bool = False, multiple: bool = True):
     items = list(menuitems.keys())
     
-    print(f"{prompt}:\n")
+    print(f"\n{prompt}:\n")
     for i, item in enumerate(items):
         print(f"\t{i + 1}: {item}")
     print("\n\t0: Cancel\n")
 
-    strInclude = f"""{"exclude" if exclude else "include"}"""
     strMultiple = f"""Select one{' or multiple (eg: "1", "1 4 2")' if multiple else ''}"""
 
-    indices = input(f"""Items to {strInclude}. {strMultiple}\n : """).split(" ")
+    indices = input(f"""{strMultiple}\n : """).split(" ")
     
     valid = 0x0
     for i in indices:
@@ -70,57 +69,57 @@ def initDatabase():
     except Exception as e:
         print(e)
 
-    return cu
+    return db, cu
 
 
-def funcQueries(cur):
-    queries = {"Select all from Student table": queryStudents}
+def funcQueries(db, cur):
+    queries = {"Select all contact information of students or teachers": queryContactInfo,
+               "Select all information of wanted student or teacher": queryStudentOrTeacherInfo}
 
     ret = interactiveMenu(queries, multiple = False)
     if ret == None:
         return
     
     try:
-        queries[ret](cur)
+        queries[ret](db, cur)
     except Exception as e:
         print(e)
         return
 
-def funcRunTests(cur):
+def funcRunTests(db, cur):
     subprocess.run(["tests/runtests.sh", "--exit-on-failure"])
 
-def queryStudents(cur):
-    output = cur.execute("SELECT * FROM Student;")
-    for line in output:
-        print(line)
-
-def queryStudentOrTeacherInfo(cur):
+def queryStudentOrTeacherInfo(db, cur):
 
     info = input("Do you want to print teacher or student information? [T/S]: ")
     if info == "S":
         name = input("Write the of last name the student: ")
-        cur.execute(f'SELECT * FROM Student WHERE last_name = {name};')
+        output = cur.execute(f"SELECT * FROM Student WHERE last_name = '{name}';").fetchall()
 
     elif info == "T": 
         name = input("Write the last name of the Teacher: ")
-        cur.execute(f'SELECT * FROM Teacher WHERE last_name = {name};')
+        output = cur.execute(f"SELECT * FROM Teacher WHERE last_name = '{name}';").fetchall()
     else: 
         return
+    for line in output:
+        print(line)
 
-def queryContactInfo(cur):
+def queryContactInfo(db, cur):
     
     info = input("Do you want teachers or students contact information? [T/S]: ")
     if info == "S":
-        cur.execute(f'SELECT last_name, first_name, email FROM Student;')
+        output = cur.execute(f'SELECT last_name, first_name, email FROM Student;').fetchall()
 
     elif info == "T":
-        cur.execute(f'SELECT last_name, first_name, email FROM Teacher;')
+        output = cur.execute(f'SELECT last_name, first_name, email FROM Teacher;').fetchall()
     else:
         return
+    for line in output:
+        print(line)
 
-def funcSearchStudent(cur):
+def funcSearchStudent(db, cur):
     name = input("What is the last name of the student of which information you wish to search?: ")
-    cur.execute(f'SELECT * FROM Student WHERE {name};')
+    cur.execute(f"SELECT * FROM Student WHERE last_name = '{name}';")
     oneRow = cur.fetchone()
 
     print("Student ID: " + str(oneRow['student_ID']))
@@ -131,23 +130,37 @@ def funcSearchStudent(cur):
     print("Subject: " + str(oneRow['subject']))
     return
 
-def funcDeleteStudent(cur):
-    studentID = input("What is the last name of the student to be deleted from the database?: ")
-    cur.execute(f'DELETE FROM Student WHERE student_ID = {};')
-    
+def funcDeleteStudent(db, cur):
+    studentID = input("What is the id of the student to be deleted from the database?: ")
+    cur.execute(f'DELETE FROM Student WHERE student_ID = {studentID};')
+    db.commit()
     return
 
+def funcInsertStudent(db, cur):
+    id = int(input("Write the student id (xxxx): "))
+    bd = input("Write the date of birth (dd.mm.yyyy): ")
+    email = input("Write the students email: ")
+    lastname = input("Write the last name: ")
+    firstname = input("Write the first name: ")
+    subject = input("Write the subject: ")
+
+    cur.execute(f"INSERT INTO Student VALUES ({id}, '{firstname}', '{lastname}', '{bd}', '{email}', '{subject}');")
+    db.commit()
+    return
 
 if __name__ == "__main__":
-    cur = initDatabase()
+    db, cur = initDatabase()
 
     while True:
         mainmenu = {"Run example queries": funcQueries,
-                    "Run tests (requires bash)": funcRunTests}
+                    "Run tests (requires bash)": funcRunTests,
+                    "Search data from Student table": funcSearchStudent,
+                    "Delete data from Student table": funcDeleteStudent,
+                    "Insert data to Student table": funcInsertStudent}
 
         ret = interactiveMenu(mainmenu, multiple = False)
         if ret == None:
             break
 
-        mainmenu[ret](cur)
+        mainmenu[ret](db, cur)
 

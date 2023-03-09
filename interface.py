@@ -91,10 +91,35 @@ def funcRunTests():
 def funcDummy():
     print("Jeerock")
 
+def queryStudentOrTeacherInfo(cur):
+
+    info = input("Do you want to print teacher or student information? [T/S]: ")
+    if info == "S":
+        name = input("Write the of last name the student: ")
+        cur.execute(f'SELECT * FROM Student WHERE last_name = {name};')
+
+    elif info == "T": 
+        name = input("Write the last name of the Teacher: ")
+        cur.execute(f'SELECT * FROM Teacher WHERE last_name = {name};')
+    else: 
+        return
+
+def queryContactInfo(cur):
+    
+    info = input("Do you want teachers or students contact information? [T/S]: ")
+    if info == "S":
+        cur.execute(f'SELECT last_name, first_name, email FROM Student;')
+
+    elif info == "T":
+        cur.execute(f'SELECT last_name, first_name, email FROM Teacher;')
+    else:
+        return
+
+
 if __name__ == "__main__":
     while True:
         mainmenu = {"Run example queries": funcQueries,
-                    "Run tests": funcRunTests}
+                    "Run tests": funcRunTests,}
 
         ret = interactiveMenu(mainmenu, multiple = False)
         if ret == None:

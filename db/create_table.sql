@@ -25,9 +25,14 @@ CREATE TABLE Teacher(
     date_of_birth VARCHAR(50) NOT NULL,
     email VARCHAR(50) NOT NULL,
     class_name VARCHAR(50),
+    university_name VARCHAR(50),
     CHECK (teacher_ID > 0),
     FOREIGN KEY (class_name)
         REFERENCES Class (name)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE,
+    FOREIGN KEY (university_name)
+        REFERENCES University (name)
         ON UPDATE CASCADE
         ON DELETE CASCADE,
     UNIQUE (teacher_ID, email)
@@ -116,29 +121,22 @@ INSERT INTO Student VALUES
 
 
 --Insering text to the table
-INSERT INTO University (name, student_ID, teacher_ID, class_name) VALUES
-    ("LUT University", 9321, 1001, "Data Structures and Algorithms"),
-    ("LUT University", 9829, 1002, "Basics of Database Systems"),
-    ("LUT University", 3376, 1003, "Svenska i Arbetslivet"),
-    ("LUT University", 1659, 1004, "Introduction to DevOps"),
-    ("LUT University", 5548, 1005, "Discrete Models and Methods"),
-    ("LUT University", 9863, 1006, "Basics of Linux"),
-    ("LUT University", 7593, 1007, "Foundations of Computer Science");
-    
-    -- ("Aalto University"),
-    -- ("University of Oulu"),
-    -- ("University of Vaasa"),
-    -- ("University of Eastern Finland");
+INSERT INTO University (name) VALUES
+    ("LUT University"),
+    ("Aalto University"),
+    ("University of Oulu"),
+    ("University of Vaasa"),
+    ("University of Eastern Finland");
 
 --Inserting stuff to the Teacher table
 INSERT INTO Teacher VALUES
-    (1001, "Geoff", "Douglas", "02.05.1985", "geoff.douglas@jeejee.fi"),
-    (1002, "Anastasia", "Peterson", "13.05.1978", "anastasia.peterson@jeejee.fi"),
-    (1003, "Brad", "Baron","12.12.1986", "brad.barond@jeejee.fi"),
-    (1004, "Daniel", "Inder", "09.09.1967", "daniel.inder@jeejee.fi"),
-    (1005, "Troy", "Sable", "17.04.1988", "troy.sable@jeejee.fi"),
-    (1006, "Jennifer", "Frawley", "16.08.1981", "jennifer.frawley@jeejee.fi"),
-    (1007, "Monica", "Kaldor", "30.01.1989", "monica.kaldor@jeejee.fi");
+    (1001, "Geoff", "Douglas", "02.05.1985", "geoff.douglas@jeejee.fi", "Data Struectures and Algorithms", "LUT University"),
+    (1002, "Anastasia", "Peterson", "13.05.1978", "anastasia.peterson@jeejee.fi", "Basics of Database Systems", "LUT University"),
+    (1003, "Brad", "Baron","12.12.1986", "brad.barond@jeejee.fi", "Scenska i Arbetslivet", "LUT University"),
+    (1004, "Daniel", "Inder", "09.09.1967", "daniel.inder@jeejee.fi", "Introduction to DevOps", "LUT University"),
+    (1005, "Troy", "Sable", "17.04.1988", "troy.sable@jeejee.fi", "Discrete Models and Methods", "LUT University"),
+    (1006, "Jennifer", "Frawley", "16.08.1981", "jennifer.frawley@jeejee.fi", "Basics of Linux", "LUT University"),
+    (1007, "Monica", "Kaldor", "30.01.1989", "monica.kaldor@jeejee.fi", "Foundation of Computer Science", "LUT University");
     
 --Inserting stuff to Class table
 INSERT INTO Class (name, room_ID, student_ID, teacher_ID) VALUES
@@ -149,3 +147,4 @@ INSERT INTO Class (name, room_ID, student_ID, teacher_ID) VALUES
     ("Discrete Models and Methods", 5, 5548, 1005),
     ("Basics of Linux", 6, 9863, 1006),
     ("Foundations of Computer Science", 7, 7593, 1007);
+

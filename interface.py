@@ -118,6 +118,25 @@ def queryContactInfo(cur):
     else:
         return
 
+def funcSearchStudent(cur):
+    name = input("What is the last name of the student of which information you wish to search?: ")
+    cur.execute(f'SELECT * FROM Student WHERE {name};')
+    oneRow = cur.fetchone()
+
+    print("Student ID: " + str(oneRow['student_ID']))
+    print("Last name: " + str(oneRow['last_name']))
+    print("First name: " + str(oneRow['first_name']))
+    print("Date of birth: " + str(oneRow['date_of_birth']))
+    print("Email: " + str(oneRow['email']))
+    print("Subject: " + str(oneRow['subject']))
+    return
+
+def funcDeleteStudent(cur):
+    studentID = input("What is the last name of the student to be deleted from the database?: ")
+    cur.execute(f'DELETE FROM Student WHERE student_ID = {};')
+    
+    return
+
 
 if __name__ == "__main__":
     cur = initDatabase()

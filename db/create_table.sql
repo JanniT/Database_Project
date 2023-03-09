@@ -84,6 +84,10 @@ CREATE TABLE Project(
         ON DELETE CASCADE
 );
 
+CREATE INDEX student_name_alphabetical ON Student (last_name, first_name);
+
+CREATE INDEX project_name_alphabetical ON Project (project_name ASC);
+
 -- Dummy data for Project table
 INSERT INTO Project VALUES
     (1234, "Backlog grooming", 9321),

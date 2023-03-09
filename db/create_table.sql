@@ -25,9 +25,14 @@ CREATE TABLE Teacher(
     date_of_birth VARCHAR(50) NOT NULL,
     email VARCHAR(50) NOT NULL,
     class_name VARCHAR(50),
+    university_name VARCHAR(50),
     CHECK (teacher_ID > 0),
     FOREIGN KEY (class_name)
         REFERENCES Class (name)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE,
+    FOREIGN KEY (university_name)
+        REFERENCES University (name)
         ON UPDATE CASCADE
         ON DELETE CASCADE,
     UNIQUE (teacher_ID, email)
@@ -121,13 +126,13 @@ INSERT INTO University (name) VALUES
 
 --Inserting stuff to the Teacher table
 INSERT INTO Teacher VALUES
-    (1001, "Geoff", "Douglas", "02.05.1985", "geoff.douglas@jeejee.fi", ""),
-    (1002, "Anastasia", "Peterson", "13.05.1978", "anastasia.peterson@jeejee.fi", ""),
-    (1003, "Brad", "Baron","12.12.1986", "brad.barond@jeejee.fi", ""),
-    (1004, "Daniel", "Inder", "09.09.1967", "daniel.inder@jeejee.fi", ""),
-    (1005, "Troy", "Sable", "17.04.1988", "troy.sable@jeejee.fi", ""),
-    (1006, "Jennifer", "Frawley", "16.08.1981", "jennifer.frawley@jeejee.fi", ""),
-    (1007, "Monica", "Kaldor", "30.01.1989", "monica.kaldor@jeejee.fi", "");
+    (1001, "Geoff", "Douglas", "02.05.1985", "geoff.douglas@jeejee.fi", "Data Struectures and Algorithms", "LUT University"),
+    (1002, "Anastasia", "Peterson", "13.05.1978", "anastasia.peterson@jeejee.fi", "Basics of Database Systems", "LUT University"),
+    (1003, "Brad", "Baron","12.12.1986", "brad.barond@jeejee.fi", "Scenska i Arbetslivet", "LUT University"),
+    (1004, "Daniel", "Inder", "09.09.1967", "daniel.inder@jeejee.fi", "Introduction to DevOps", "LUT University"),
+    (1005, "Troy", "Sable", "17.04.1988", "troy.sable@jeejee.fi", "Discrete Models and Methods", "LUT University"),
+    (1006, "Jennifer", "Frawley", "16.08.1981", "jennifer.frawley@jeejee.fi", "Basics of Linux", "LUT University"),
+    (1007, "Monica", "Kaldor", "30.01.1989", "monica.kaldor@jeejee.fi", "Foundation of Computer Science", "LUT University");
     
 --Inserting stuff to Class table
 INSERT INTO Class (name, room_ID, student_ID, teacher_ID) VALUES

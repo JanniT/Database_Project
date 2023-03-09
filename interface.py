@@ -3,10 +3,11 @@
 import sqlite3
 import subprocess
 import sys
+import os
 
 
-
-def interactiveMenu(menuitems: dict, prompt: str = "Select", exclude: bool = False, multiple: bool = True):
+def interactiveMenu(menuitems: dict, prompt: str = "Select",
+        exclude: bool = False, multiple: bool = True):
     items = list(menuitems.keys())
     
     print(f"{prompt}:\n")
@@ -49,6 +50,14 @@ def interactiveMenu(menuitems: dict, prompt: str = "Select", exclude: bool = Fal
     return ret
 
 def initDatabase():
+    if os.path.exists("database.db"):
+        try:
+            os.remove("database.db")
+        except Exception as e:
+            print("Failed to cleanup existing database file.", \
+                    "Must delete manually...\n", e)
+            return
+
     db = sqlite3.connect("database.db")
     cu = db.cursor()
 
@@ -61,35 +70,29 @@ def initDatabase():
     except Exception as e:
         print(e)
 
-    return (db, cu)
+    return cu
 
-def funcQueries():
 
-    db, cu = initDatabase()
-
-    queries = {"Select all from University table": "SELECT * FROM University;",
-               "Select all from Student table": "SELECT * FROM Student;"}
+def funcQueries(cur):
+    queries = {"Select all from Student table": queryStudents}
 
     ret = interactiveMenu(queries, multiple = False)
     if ret == None:
         return
     
     try:
-        out = cu.execute(queries[ret]).fetchall()
+        queries[ret](cur)
     except Exception as e:
         print(e)
         return
 
-    print(f"\nSuccess!\n")
-    for line in out:
-        print(line)
-    print("")
-
-def funcRunTests():
+def funcRunTests(cur):
     subprocess.run(["tests/runtests.sh", "--exit-on-failure"])
 
-def funcDummy():
-    print("Jeerock")
+def queryStudents(cur):
+    output = cur.execute("SELECT * FROM Student;")
+    for line in output:
+        print(line)
 
 def queryStudentOrTeacherInfo(cur):
 
@@ -117,13 +120,15 @@ def queryContactInfo(cur):
 
 
 if __name__ == "__main__":
+    cur = initDatabase()
+
     while True:
         mainmenu = {"Run example queries": funcQueries,
-                    "Run tests": funcRunTests,}
+                    "Run tests (requires bash)": funcRunTests}
 
         ret = interactiveMenu(mainmenu, multiple = False)
         if ret == None:
             break
 
-        mainmenu[ret]()
+        mainmenu[ret](cur)
 

@@ -4,6 +4,7 @@ import sqlite3
 import subprocess
 import sys
 import os
+import re
 
 
 def interactiveMenu(menuitems: dict, prompt: str = "Select",
@@ -32,33 +33,42 @@ def interactiveMenu(menuitems: dict, prompt: str = "Select",
     if exclude:
         valid ^= 2 ** (len(items).bit_length() + 1) - 1
 
-    ret = [] 
+    keys = [] 
     for item in items:
         if valid & 1:
-            ret.append(item)
+            keys.append(item)
         valid >>= 1
+
+    if not keys:
+        return None
     
-    if not ret:
-        return None
-
-    ret = ret if multiple else ret[0]
-
-    if ret not in list(menuitems.keys()):
-        return None
-
-    return ret
+    if multiple:
+        ret = []
+        for key in keys:
+            if key in list(menuitems.keys()):
+                ret.append(key)
+        return ret
+    else:
+        return keys[0]
 
 def initDatabase():
-    if os.path.exists("database.db"):
+    if os.path.exists("database.db") and \
+       input("Database file already exists, reinitialize? [y/N]: ") in ("y", "Y"):
         try:
             os.remove("database.db")
+            print("Database file deleted")
         except Exception as e:
             print("Failed to cleanup existing database file.", \
                     "Must delete manually...\n", e)
             return
 
-    db = sqlite3.connect("database.db")
-    cu = db.cursor()
+        db = sqlite3.connect("database.db")
+        cu = db.cursor()
+    else:
+        db = sqlite3.connect("database.db")
+        cu = db.cursor()
+
+        return db, cu
 
     try:
         with open("db/create_table.sql", "r") as f:
@@ -79,18 +89,130 @@ def funcQueries(db, cur):
     ret = interactiveMenu(queries, multiple = False)
     if ret == None:
         return
-    
     try:
         queries[ret](db, cur)
     except Exception as e:
         print(e)
         return
 
+
 def funcRunTests(db, cur):
     subprocess.run(["tests/runtests.sh", "--exit-on-failure"])
 
-def queryStudentOrTeacherInfo(db, cur):
 
+def searchForGivenStudent(cur):
+    term = input("Search student using Name and/or ID (eg. First Last, 1234): ")
+    sid, name = "0", ""
+
+    # Check for id
+    for i, char in enumerate(term):
+        if char in ("0123456789"):
+            sid += char
+        else:
+            name += char
+
+    if int(sid) == 0:
+        return 0, name
+    else:
+        return int(sid), ""
+
+
+def funcUpdateStudent(db, cur):
+    studentID, studentName = searchForGivenStudent(cur)
+
+    # Evaluate if student exists
+    if len(studentName.split(" ")) != 2:
+        if int(studentID) == 0:
+            print("Must give either ID or both names")
+            return
+    else:
+        first = studentName.split(" ")[0]
+        last = studentName.split(" ")[1]
+
+    query = "SELECT * FROM Student WHERE "
+    query += f"student_ID = {studentID}" if studentID != 0 else \
+             f"first_name = '{first}'"
+    query += "" if studentID != 0 else f" AND last_name = '{last}'"
+    query += ";"
+
+    if not cur.execute(query):
+        print("Student does not exist")
+        return
+
+    columns = ["Name", "Date of Birth", "Email", "Major"]
+
+    attrs = {columns[0]: "name 'First Last'",
+             columns[1]: "birthdate 'dd.mm.yyyy'",
+             columns[2]: "email 'some.thing@doma.in'",
+             columns[3]: "major"}
+
+    selection = interactiveMenu(attrs)
+
+    if not selection:
+        return
+
+    sel = []
+    for i, attr in enumerate(selection):
+        sel.append((attr, input(f"Enter new {attrs[attr]}: ")))
+
+    # Sanitize and parse input
+    for column, attribute in sel:
+        validattr = ""
+        for char in re.findall("(\s|[a-zA-Z0-9]|ä|Ä|ö|Ö|å|Å|@|\.)", attribute):
+            validattr += char
+
+        if not validattr:
+            return
+
+        if column == columns[0]: # Name
+            if len(validattr.split(" ")[:50]) != 2:
+                print("Must provide both first and last name, separated by space")
+                return 
+
+            newfirst = validattr.split(" ")[0][:50]
+            newlast = validattr.split(" ")[1][:50]
+
+            query =  f"UPDATE Student SET first_name = '{newfirst}', "
+            query += f"last_name = '{newlast}' WHERE "
+        elif column == columns[1]: # birthdate
+            bday = re.search("([0-9]{2}\.){2}[0-9]{4}", validattr[:50])
+            if not bday:
+                return
+            query = f"UPDATE Student SET date_of_birth = '{bday.string}' WHERE "
+        elif column == columns[2]: # Email
+            email = re.search("(\w|-|_)*\.?(\w|-|_)*@(\w|\.|-|_)*\.[a-z]*", validattr[:50])
+            if not email:
+                return
+            query = f"""UPDATE Student SET email = "{email.string}" WHERE """
+        elif column == columns[3]: # Major
+            major = validattr[:50]
+            query = f"UPDATE Student SET subject = '{major}' WHERE "
+        else:
+            print("Bad attribute")
+            return
+
+        query += f"student_ID = {studentID}" if studentID != 0 else \
+                 f"first_name = '{first}' AND last_name = '{last}'"
+        query += ";"
+
+        cur.execute(query)
+    
+    db.commit()
+
+    success = ""
+    for i, col in enumerate(selection):
+        success += f"{col}{', ' if i < len(selection) - 1 else '.'}"
+    print(f"\nUpdated {success.lower()}")
+
+
+
+def queryStudents(db, cur):
+    output = cur.execute("SELECT * FROM Student;")
+    for line in output:
+        print(line)
+
+
+def queryStudentOrTeacherInfo(db, cur):
     info = input("Do you want to print teacher or student information? [T/S]: ")
     if info == "S":
         name = input("Write the of last name the student: ")
@@ -105,7 +227,6 @@ def queryStudentOrTeacherInfo(db, cur):
         print(line)
 
 def queryContactInfo(db, cur):
-    
     info = input("Do you want teachers or students contact information? [T/S]: ")
     if info == "S":
         output = cur.execute(f'SELECT last_name, first_name, email FROM Student;').fetchall()
@@ -122,22 +243,34 @@ def funcSearchStudent(db, cur):
     cur.execute(f"SELECT * FROM Student WHERE last_name = '{name}';")
     oneRow = cur.fetchone()
 
-    print("Student ID: " + str(oneRow['student_ID']))
-    print("Last name: " + str(oneRow['last_name']))
-    print("First name: " + str(oneRow['first_name']))
-    print("Date of birth: " + str(oneRow['date_of_birth']))
-    print("Email: " + str(oneRow['email']))
-    print("Subject: " + str(oneRow['subject']))
-    return
+    if not oneRow:
+        print("No such student found")
+        return
+
+    print("\nStudent ID:    " + str(oneRow[0]))
+    print("Last name:     " + str(oneRow[1]))
+    print("First name:    " + str(oneRow[2]))
+    print("Date of birth: " + str(oneRow[3]))
+    print("Email:         " + str(oneRow[4]))
+    print("Subject:       " + str(oneRow[5]))
 
 def funcDeleteStudent(db, cur):
     studentID = input("What is the id of the student to be deleted from the database?: ")
-    cur.execute(f'DELETE FROM Student WHERE student_ID = {studentID};')
+
+    try:
+        cur.execute(f'DELETE FROM Student WHERE student_ID = {studentID};')
+    except sqlite3.OperationalError as e:
+        print("No such student found")
+        return
+
     db.commit()
-    return
 
 def funcInsertStudent(db, cur):
-    id = int(input("Write the student id (xxxx): "))
+    try:
+        id = int(input("Write the student id (xxxx): "))
+    except ValueError:
+        print("Invalid ID, must follow format XXXX")
+        return
     bd = input("Write the date of birth (dd.mm.yyyy): ")
     email = input("Write the students email: ")
     lastname = input("Write the last name: ")
@@ -156,7 +289,8 @@ if __name__ == "__main__":
                     "Run tests (requires bash)": funcRunTests,
                     "Search data from Student table": funcSearchStudent,
                     "Delete data from Student table": funcDeleteStudent,
-                    "Insert data to Student table": funcInsertStudent}
+                    "Insert data to Student table": funcInsertStudent,
+                    "Update student information": funcUpdateStudent}
 
         ret = interactiveMenu(mainmenu, multiple = False)
         if ret == None:

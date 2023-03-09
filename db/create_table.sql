@@ -89,6 +89,10 @@ CREATE TABLE Project(
         ON DELETE CASCADE
 );
 
+CREATE INDEX student_name_alphabetical ON Student (last_name, first_name);
+
+CREATE INDEX project_name_alphabetical ON Project (project_name ASC);
+
 -- Dummy data for Project table
 INSERT INTO Project VALUES
     (1234, "Backlog grooming", 9321),
@@ -143,3 +147,4 @@ INSERT INTO Class (name, room_ID, student_ID, teacher_ID) VALUES
     ("Discrete Models and Methods", 5, 5548, 1005),
     ("Basics of Linux", 6, 9863, 1006),
     ("Foundations of Computer Science", 7, 7593, 1007);
+

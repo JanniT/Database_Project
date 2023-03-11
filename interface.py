@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 
-import sqlite3
+import sqlite3 
 import subprocess
 import sys
 import os
@@ -84,7 +84,10 @@ def initDatabase():
 
 def funcQueries(db, cur):
     queries = {"Select all contact information of students or teachers": queryContactInfo,
-               "Select all information of wanted student or teacher": queryStudentOrTeacherInfo}
+               "Select all information of wanted student or teacher": queryStudentOrTeacherInfo,
+               "List classes for all or given student": queryStudentClasses,
+               "List work projects of all/given student": queryStudentWorkProject,
+               "List teachers from selected university": queryGetTeachers}
 
     ret = interactiveMenu(queries, multiple = False)
     if ret == None:
@@ -100,7 +103,7 @@ def funcRunTests(db, cur):
     subprocess.run(["tests/runtests.sh", "--exit-on-failure"])
 
 
-def searchForGivenStudent(cur):
+def searchForGivenStudent(cur) -> int:
     term = input("Search student using Name and/or ID (eg. First Last, 1234): ")
     sid, name = "0", ""
 
@@ -110,33 +113,32 @@ def searchForGivenStudent(cur):
             sid += char
         else:
             name += char
+    
+    query = "SELECT * FROM Student "
 
     if int(sid) == 0:
-        return 0, name
+        if len(name.split(" ")) != 2:
+            print("Invalid name")
+            return
+
+        first = name.split(" ")[0][:50]
+        last = name.split(" ")[1][:50]
+        query += f"WHERE first_name = '{first}' AND last_name = '{last}';"
     else:
-        return int(sid), ""
+        query += f"WHERE student_ID = {sid}"
+
+    out = cur.execute(query)
+    if not out:
+        print("Student does not exist")
+        return None
+    
+    return int(out.fetchall()[0][0])
 
 
 def funcUpdateStudent(db, cur):
-    studentID, studentName = searchForGivenStudent(cur)
-
-    # Evaluate if student exists
-    if len(studentName.split(" ")) != 2:
-        if int(studentID) == 0:
-            print("Must give either ID or both names")
-            return
-    else:
-        first = studentName.split(" ")[0]
-        last = studentName.split(" ")[1]
-
-    query = "SELECT * FROM Student WHERE "
-    query += f"student_ID = {studentID}" if studentID != 0 else \
-             f"first_name = '{first}'"
-    query += "" if studentID != 0 else f" AND last_name = '{last}'"
-    query += ";"
-
-    if not cur.execute(query):
-        print("Student does not exist")
+    studentID = searchForGivenStudent(cur)
+    
+    if not studentID:
         return
 
     columns = ["Name", "Date of Birth", "Email", "Major"]
@@ -191,25 +193,82 @@ def funcUpdateStudent(db, cur):
             print("Bad attribute")
             return
 
-        query += f"student_ID = {studentID}" if studentID != 0 else \
-                 f"first_name = '{first}' AND last_name = '{last}'"
-        query += ";"
+        query += f"student_ID = {studentID};"
 
         cur.execute(query)
     
     db.commit()
-
+    
+    # Print which columns changes were done eg.
+    # "Updated name, email, major."
     success = ""
     for i, col in enumerate(selection):
         success += f"{col}{', ' if i < len(selection) - 1 else '.'}"
     print(f"\nUpdated {success.lower()}")
 
 
-
+# Test
 def queryStudents(db, cur):
     output = cur.execute("SELECT * FROM Student;")
     for line in output:
         print(line)
+
+def queryStudentClasses(db, cur):
+    all = input("Search for specific student? [y/N]: ") in ("y", "Y")
+
+    if all:
+        studentID = searchForGivenStudent(cur)
+        if not studentID:
+            return
+
+    query = "SELECT Student.student_ID, Student.first_name, Student.last_name, "
+    query += "Class.name "
+    query += "FROM Student "
+    query += "INNER JOIN Class "
+    query += "ON Class.student_ID = Student.student_ID "
+    query += ";" if not all else f"WHERE Student.student_ID = {studentID}"
+
+    classes = cur.execute(query)
+    for i in classes:
+        print(i)
+
+def queryStudentWorkProject(db, cur):
+    all = input("Search for specific student? [y/N]: ") in ("y", "Y")
+
+    if all:
+        studentID = searchForGivenStudent(cur)
+        if not studentID:
+            return
+
+    query = "SELECT DISTINCT Student.student_ID, Student.first_name, Student.last_name, "
+    query += "Company.company_name, "
+    query += "Project.project_ID, Project.project_name "
+    query += "FROM Student "
+    query += "INNER JOIN Project ON Company.project_ID = Project.project_ID "
+    query += "INNER JOIN Company ON Student.student_ID = Company.student_ID "
+    query += " " if not all else f"WHERE Student.student_ID = {studentID} "
+    query += "GROUP BY Company.company_name;"
+
+    projects = cur.execute(query)
+    for i in projects:
+        print(i)
+
+def queryGetTeachers(db, cur):
+    unicur = cur.execute("SELECT * FROM University;").fetchall()
+
+    # Create dict with uni names as keys, values don't matter here, so 
+    # are assigned as None
+    unis = {}
+    for uni in unicur:
+        unis[uni[0]] = None
+
+    sel = interactiveMenu(unis, multiple=True)
+
+    for uni in sel:
+        o = cur.execute(f"SELECT * FROM Teacher WHERE university_name = '{uni}'")
+        for teacher in o.fetchall():
+            print(teacher)
+
 
 
 def queryStudentOrTeacherInfo(db, cur):

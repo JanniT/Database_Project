@@ -132,11 +132,31 @@ INSERT INTO University (name) VALUES
 INSERT INTO Teacher VALUES
     (1001, "Geoff", "Douglas", "02.05.1985", "geoff.douglas@jeejee.fi", "Data Struectures and Algorithms", "LUT University"),
     (1002, "Anastasia", "Peterson", "13.05.1978", "anastasia.peterson@jeejee.fi", "Basics of Database Systems", "LUT University"),
-    (1003, "Brad", "Baron","12.12.1986", "brad.barond@jeejee.fi", "Scenska i Arbetslivet", "LUT University"),
+    (1003, "Brad", "Baron","12.12.1986", "brad.barond@jeejee.fi", "Svenska i Arbetslivet", "LUT University"),
     (1004, "Daniel", "Inder", "09.09.1967", "daniel.inder@jeejee.fi", "Introduction to DevOps", "LUT University"),
     (1005, "Troy", "Sable", "17.04.1988", "troy.sable@jeejee.fi", "Discrete Models and Methods", "LUT University"),
     (1006, "Jennifer", "Frawley", "16.08.1981", "jennifer.frawley@jeejee.fi", "Basics of Linux", "LUT University"),
-    (1007, "Monica", "Kaldor", "30.01.1989", "monica.kaldor@jeejee.fi", "Foundation of Computer Science", "LUT University");
+    (1007, "Monica", "Kardashian", "30.01.1989", "monica.kaldor@jeejee.fi", "Foundation of Computer Science", "Aalto University"),
+
+    (2001, "Jay", "Weyney", "17.12.1967", "jay.Weyney@jeejee.fi", "Basics of Database Systems", "Aalto University"),
+    (2002, "Dominic", "Partson", "19.08.1985", "dominic.partson@jeejee.fi", "Foundation of Computer Science", "Aalto University"),
+    (2003, "Hayden", "Way", "27.06.1975", "hayden.Way@jeejee.fi", "Svenska i Arbetslivet", "Aalto University"),
+    (2004, "Jack", "Jackson", "26.02.1973", "jay.jackson@jeejee.fi", "Discrete Models and Methods", "Aalto University"),
+
+    (3001, "Ye", "West", "26.06.1969", "ye.west@jeejee.fi", "Foundation of Computer Science", "University of Oulu"),
+    (3002, "Michael", "Jackson", "06.08.1975", "michael.jackson@jeejee.fi", "Basics of Database Systems", "University of Oulu"),
+    (3003, "Cashey", "Hayday", "18.01.1976", "cashey.hayday@jeejee.fi", "Basics of Linux", "University of Oulu"),
+    (3004, "Liam", "Sheesh", "26.02.1973", "liam.sheesh@jeejee.fi", "Foundation of Computer Science", "University of Oulu"),
+
+    (4001, "Kal", "Bin", "17.12.1958", "kal.bin@jeejee.fi", "Foundation of Computer Science", "University of Vaasa"),
+    (4002, "Frederick", "Daylight", "18.03.1978", "frederick.daylight@jeejee.fi", "Basics of Database Systems", "University of Vaasa"),
+    (4003, "Ocland", "mesh", "18.12.1968", "ocland.mesh@jeejee.fi", "Svenska i Arbetslivet", "University of Vaasa"),
+    (4004, "Penelope", "Hay", "20.09.1992", "penelope.hay@jeejee.fi", "Discrete Models and Methods", "University of Vaasa"),
+
+    (5001, "frank", "pert", "01.01.1990", "frank.pert@jeejee.fi", "Svenska i Arbetslivet", "University of Eastern Finland"),
+    (5002, "Akon", "Lind", "18.08.1986", "akon.lind@jeejee.fi", "Discrete Models and Methods", "University of Eastern Finland"),
+    (5003, "Joshua", "Jayd", "16.12.1995", "joshua.jayd@jeejee.fi", "Basics of Database Systems", "University of Eastern Finland"),
+    (5004, "Jen", "Pol", "02.01.1985", "jen.pol@jeejee.fi", "Foundation of Computer Science", "University of Eastern Finland");
     
 --Inserting stuff to Class table
 INSERT INTO Class (name, room_ID, student_ID, teacher_ID) VALUES

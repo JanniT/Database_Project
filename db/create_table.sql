@@ -61,7 +61,11 @@ CREATE TABLE Student(
     date_of_birth VARCHAR(50) NOT NULL,
     email VARCHAR(50) NOT NULL,
     subject VARCHAR(50) NOT NULL,
-    
+    university_name VARCHAR(50) NOT NULL,
+    FOREIGN KEY (university_name)
+        REFERENCES University (name)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE,
     UNIQUE (student_ID, email)
 );
 
@@ -111,13 +115,13 @@ INSERT INTO Company VALUES
 
 -- Student data 
 INSERT INTO Student VALUES
-    (9321, "Jofa", "Kaiffari", "01.01.1999", "jofa.kaiffari@jeerock.com", "Software Engineering"),
-    (9829, "Iskender", "Kebab", "04.03.2001", "iskender.kebab@jeerock.com", "Software Engineering"),
-    (3376, "Big", "Mac", "19.11.2000", "big.mac@jeerock.com", "Industrial Engineering and Management"),
-    (1659, "Pepsi", "Man", "30.01.2000", "pepsi.man@jeerock.com", "Industrial Engineering and Management"),
-    (5548, "Albert", "Einstein", "12.08.1999", "albert.einstein@jeerock.com", "Computational Engineering"),
-    (9863, "Helsinki", "City", "02.02.2002", "helsinki.city@jeerock.com", "Environmental Engineering"),
-    (7593, "Schrödingering", "Kissa", "01.01.1999", "jofa.kaiffari@jeerock.com", "Computational Engineering");
+    (9321, "Jofa", "Kaiffari", "01.01.1999", "jofa.kaiffari@jeerock.com", "Software Engineering", "LUT University"),
+    (9829, "Iskender", "Kebab", "04.03.2001", "iskender.kebab@jeerock.com", "Software Engineering", "LUT University"),
+    (3376, "Big", "Mac", "19.11.2000", "big.mac@jeerock.com", "Industrial Engineering and Management", "LUT University"),
+    (1659, "Pepsi", "Man", "30.01.2000", "pepsi.man@jeerock.com", "Industrial Engineering and Management", "LUT University"),
+    (5548, "Albert", "Einstein", "12.08.1999", "albert.einstein@jeerock.com", "Computational Engineering", "LUT University"),
+    (9863, "Helsinki", "City", "02.02.2002", "helsinki.city@jeerock.com", "Environmental Engineering", "LUT University"),
+    (7593, "Schrödingering", "Kissa", "01.01.1999", "jofa.kaiffari@jeerock.com", "Computational Engineering", "LUT University");
 
 
 --Insering text to the table

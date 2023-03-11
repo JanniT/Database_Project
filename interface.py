@@ -52,23 +52,23 @@ def interactiveMenu(menuitems: dict, prompt: str = "Select",
         return keys[0]
 
 def initDatabase():
-    if os.path.exists("database.db") and \
-       input("Database file already exists, reinitialize? [y/N]: ") in ("y", "Y"):
-        try:
-            os.remove("database.db")
-            print("Database file deleted")
-        except Exception as e:
-            print("Failed to cleanup existing database file.", \
-                    "Must delete manually...\n", e)
-            return
+    if os.path.exists("database.db"):
+        if input("Database file already exists, reinitialize? [y/N]: ") in ("y", "Y"):
+            try:
+                os.remove("database.db")
+                print("Database file deleted")
+            except Exception as e:
+                print("Failed to cleanup existing database file.", \
+                        "Must delete manually...\n", e)
+                return
+        else:
+            db = sqlite3.connect("database.db")
+            cu = db.cursor()
 
-        db = sqlite3.connect("database.db")
-        cu = db.cursor()
-    else:
-        db = sqlite3.connect("database.db")
-        cu = db.cursor()
+            return db, cu
 
-        return db, cu
+    db = sqlite3.connect("database.db")
+    cu = db.cursor()
 
     try:
         with open("db/create_table.sql", "r") as f:

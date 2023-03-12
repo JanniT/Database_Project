@@ -5,7 +5,7 @@ import re
 import queries as q
 import util
 
-
+# Interactive menu where one can choose what queries to run
 def funcQueries(db, cur):
     queries = {"Select all contact information of students or teachers":
                q.queryContactInfo,
@@ -31,7 +31,7 @@ def funcQueries(db, cur):
 def funcRunTests(db, cur):
     subprocess.run(["tests/runtests.sh", "--exit-on-failure"])
 
-
+# This function is horrible, do not look at it
 def funcUpdateStudent(db, cur):
     studentID = util.searchForGivenStudent(cur)
 

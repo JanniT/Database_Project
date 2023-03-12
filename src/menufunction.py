@@ -145,11 +145,11 @@ def funcInsertStudent(db, cur):
     lastname = input("Write the last name: ")
     firstname = input("Write the first name: ")
     subject = input("Write the subject: ")
+    university = input("Write the university: ")
 
     query = "INSERT INTO Student VALUES"
     query += f"({id}, '{firstname}', '{lastname}', '{bd}', '{email}',"
-    query += f"'{subject}');"
+    query += f"'{subject}', '{university}');"
 
     cur.execute(query)
     db.commit()
-    return

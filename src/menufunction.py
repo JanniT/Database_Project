@@ -18,7 +18,7 @@ def funcQueries(db, cur):
                "List teachers from selected university":
                q.queryGetTeachers}
 
-    ret = util.interactiveMenu(queries, multiple=False)
+    ret = util.interactiveMenu(queries, prompt="Examples", multiple=False)
     if ret is None:
         return
     try:

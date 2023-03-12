@@ -59,11 +59,14 @@ def queryGetTeachers(db, cur):
     for uni in unicur:
         unis[uni[0]] = None
 
-    sel = util.interactiveMenu(unis, multiple=True)
+    sel = util.interactiveMenu(unis, prompt="Universities", multiple=True)
+
+    if not sel:
+        return
 
     for uni in sel:
         query = "SELECT * FROM Teacher"
-        query += f"WHERE university_name = '{uni}'"
+        query += f" WHERE university_name = '{uni}';"
         o = cur.execute(query)
 
         for teacher in o.fetchall():

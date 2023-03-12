@@ -53,7 +53,7 @@ if __name__ == "__main__":
                     "Insert data to Student table": menu.funcInsertStudent,
                     "Update student information": menu.funcUpdateStudent}
 
-        ret = util.interactiveMenu(mainmenu, multiple=False)
+        ret = util.interactiveMenu(mainmenu, prompt="Main menu", multiple=False)
         if ret is None:
             break
 

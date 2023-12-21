@@ -1,6 +1,6 @@
 # Database Project
 
-For a school course.
+This repository contains a database project.
 
 More comprehensive documentation can be found under `doc/` directory.
 
